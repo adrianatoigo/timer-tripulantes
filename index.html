@@ -3,288 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Timer Oficial do Treino</title>
-
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f5f5f5;
-    color:#333;
-    text-align:center;
-    padding:20px;
-}
-
-.container{
-    max-width:700px;
-    margin:auto;
-}
-
-h1{
-    margin-bottom:10px;
-}
-
-.block{
-    font-size:22px;
-    margin-top:15px;
-    color:#666;
-}
-
-.exercise{
-    font-size:30px;
-    font-weight:bold;
-    margin:15px 0;
-}
-
-.phase{
-    font-size:28px;
-    margin-top:10px;
-}
-
-.timer{
-    font-size:90px;
-    font-weight:bold;
-    margin:20px 0;
-}
-
-.series{
-    font-size:18px;
-    margin-bottom:20px;
-}
-
-button{
-    padding:15px 25px;
-    margin:10px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:18px;
-}
-
-.start{
-    background:#2c7be5;
-    color:white;
-}
-
-.stop{
-    background:#dc3545;
-    color:white;
-}
+body{font-family:Arial,sans-serif;background:#f4f6f8;color:#333;margin:0;padding:20px}
+.container{max-width:760px;margin:auto;text-align:center}
+.card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+h1{margin-top:0}
+.block{font-size:1.1rem;color:#666}
+.exercise{font-size:1.8rem;font-weight:bold;margin:12px 0}
+.phase{font-size:1.3rem;margin:10px 0}
+.timer{font-size:5rem;font-weight:bold;margin:20px 0}
+.series{color:#666;margin-bottom:20px}
+button{padding:12px 18px;border:none;border-radius:10px;cursor:pointer;margin:6px;font-size:1rem}
+.primary{background:#2563eb;color:white}
+.secondary{background:#e5e7eb}
+.danger{background:#dc2626;color:white}
+#finishScreen{display:none;margin-top:20px;padding:20px;background:#ecfdf5;border-radius:12px}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
-<h1>Timer Oficial do Treino</h1>
-
+<div class="card">
+<h1>🏋️ Timer Oficial do Treino</h1>
 <p>40 segundos de ação • 20 segundos de descanso</p>
 
 <div class="block" id="block">Pronto para começar</div>
-
 <div class="exercise" id="exercise">—</div>
-
 <div class="phase" id="phase">—</div>
-
 <div class="timer" id="timer">00:40</div>
-
 <div class="series" id="series">—</div>
 
-<button class="start" onclick="startWorkout(1)">
-Treino Rápido (12 min)
-</button>
+<button class="primary" onclick="startWorkout(1)">Treino Rápido (12 min)</button>
+<button class="primary" onclick="startWorkout(2)">Treino Completo (25 min)</button>
+<button class="secondary" id="soundBtn" onclick="toggleSound()">🔊 Som Ligado</button>
+<button class="danger" onclick="stopWorkout()">Parar</button>
 
-<button class="start" onclick="startWorkout(2)">
-Treino Completo (25 min)
-</button>
-
-<button class="stop" onclick="stopWorkout()">
-Parar
-</button>
-
+<div id="finishScreen">
+<h2>🎉 Treino Concluído!</h2>
+<p>Parabéns por concluir mais uma sessão.</p>
+<p>Resultados são construídos um treino de cada vez. Continue firme!</p>
+</div>
+</div>
 </div>
 
 <script>
-
-const exercises = [
-
-{
-block:"Bloco 1 • Cardio e Pernas",
-name:"Agachamento Livre com Insistência"
-},
-{
-block:"Bloco 1 • Cardio e Pernas",
-name:"Agachamento Livre com Insistência"
-},
-{
-block:"Bloco 1 • Cardio e Pernas",
-name:"Passada para Trás (Afundo Alternado)"
-},
-{
-block:"Bloco 1 • Cardio e Pernas",
-name:"Passada para Trás (Afundo Alternado)"
-},
-
-{
-block:"Bloco 2 • Braços e Costas",
-name:"Flexão de Braço"
-},
-{
-block:"Bloco 2 • Braços e Costas",
-name:"Flexão de Braço"
-},
-{
-block:"Bloco 2 • Braços e Costas",
-name:'Extensão de Tronco "YTW"'
-},
-{
-block:"Bloco 2 • Braços e Costas",
-name:'Extensão de Tronco "YTW"'
-},
-
-{
-block:"Bloco 3 • Core",
-name:"Prancha Toque no Ombro"
-},
-{
-block:"Bloco 3 • Core",
-name:"Prancha Toque no Ombro"
-},
-{
-block:"Bloco 3 • Core",
-name:"Abdominal Remador Completo"
-},
-{
-block:"Bloco 3 • Core",
-name:"Abdominal Remador Completo"
-}
-
+const exercises=[
+{block:"Bloco 1 • Cardio e Pernas",name:"Agachamento Livre com Insistência"},
+{block:"Bloco 1 • Cardio e Pernas",name:"Agachamento Livre com Insistência"},
+{block:"Bloco 1 • Cardio e Pernas",name:"Passada para Trás"},
+{block:"Bloco 1 • Cardio e Pernas",name:"Passada para Trás"},
+{block:"Bloco 2 • Braços e Costas",name:"Flexão de Braço"},
+{block:"Bloco 2 • Braços e Costas",name:"Flexão de Braço"},
+{block:"Bloco 2 • Braços e Costas",name:"Extensão de Tronco YTW"},
+{block:"Bloco 2 • Braços e Costas",name:"Extensão de Tronco YTW"},
+{block:"Bloco 3 • Core",name:"Prancha Toque no Ombro"},
+{block:"Bloco 3 • Core",name:"Prancha Toque no Ombro"},
+{block:"Bloco 3 • Core",name:"Abdominal Remador Completo"},
+{block:"Bloco 3 • Core",name:"Abdominal Remador Completo"}
 ];
 
-let rounds = 1;
-let workIndex = 0;
-let currentRound = 1;
-let phase = "work";
-let timeLeft = 40;
-let interval;
+let soundEnabled=true, rounds=1,currentRound=1,workIndex=0,phase="work",timeLeft=40,interval;
 
-function beep(freq=900,duration=200){
+function toggleSound(){
+ soundEnabled=!soundEnabled;
+ document.getElementById("soundBtn").innerText=soundEnabled?"🔊 Som Ligado":"🔇 Som Desligado";
+}
 
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
-const osc = ctx.createOscillator();
-const gain = ctx.createGain();
+function speak(text){
+ if(!soundEnabled) return;
+ speechSynthesis.cancel();
+ const msg=new SpeechSynthesisUtterance(text);
+ msg.lang="pt-BR";
+ speechSynthesis.speak(msg);
+}
 
-osc.connect(gain);
-gain.connect(ctx.destination);
+function vibrate(pattern=[200]){
+ if(navigator.vibrate){navigator.vibrate(pattern);}
+}
 
-osc.frequency.value = freq;
-gain.gain.value = 0.2;
-
-osc.start();
-
-setTimeout(()=>{
-osc.stop();
-},duration);
+function beep(){
+ if(!soundEnabled) return;
+ const ctx=new(window.AudioContext||window.webkitAudioContext)();
+ const osc=ctx.createOscillator();
+ const gain=ctx.createGain();
+ osc.connect(gain); gain.connect(ctx.destination);
+ gain.gain.value=0.1; osc.start();
+ setTimeout(()=>osc.stop(),150);
 }
 
 function updateDisplay(){
-
-const mins = String(Math.floor(timeLeft/60)).padStart(2,'0');
-const secs = String(timeLeft%60).padStart(2,'0');
-
-document.getElementById("timer").innerText =
-`${mins}:${secs}`;
-
-document.getElementById("phase").innerText =
-phase === "work"
-? "EXERCÍCIO"
-: "DESCANSO";
-
-if(workIndex < exercises.length){
-
-document.getElementById("block").innerText =
-exercises[workIndex].block;
-
-document.getElementById("exercise").innerText =
-exercises[workIndex].name;
+ document.getElementById("timer").innerText=String(Math.floor(timeLeft/60)).padStart(2,'0')+":"+String(timeLeft%60).padStart(2,'0');
+ document.getElementById("phase").innerText=phase==="work"?"EXERCÍCIO":"DESCANSO";
+ if(workIndex<exercises.length){
+  document.getElementById("block").innerText=exercises[workIndex].block;
+  document.getElementById("exercise").innerText=exercises[workIndex].name;
+ }
+ document.getElementById("series").innerText=`Exercício ${workIndex+1} de ${exercises.length} • Volta ${currentRound}/${rounds}`;
 }
 
-document.getElementById("series").innerText =
-`Exercício ${workIndex+1} de ${exercises.length} • Volta ${currentRound}/${rounds}`;
+function startWorkout(r){
+ clearInterval(interval);
+ document.getElementById("finishScreen").style.display="none";
+ rounds=r; currentRound=1; workIndex=0; phase="work"; timeLeft=40;
+ speak(exercises[0].name);
+ updateDisplay();
+
+ interval=setInterval(()=>{
+   timeLeft--;
+
+   if(phase==="work" && timeLeft>0 && timeLeft<=5){ speak(String(timeLeft)); }
+
+   updateDisplay();
+
+   if(timeLeft<=0){
+      beep(); vibrate([200]);
+
+      if(phase==="work"){
+        phase="rest"; timeLeft=20;
+        speak("Descanso");
+      }else{
+        workIndex++;
+        if(workIndex>=exercises.length){
+            if(currentRound>=rounds){
+                clearInterval(interval);
+                vibrate([500,200,500]);
+                speak("Parabéns. Treino concluído.");
+                document.getElementById("finishScreen").style.display="block";
+                document.getElementById("phase").innerText="TREINO CONCLUÍDO";
+                return;
+            }
+            currentRound++;
+            workIndex=0;
+        }
+        phase="work"; timeLeft=40;
+        speak(exercises[workIndex].name);
+      }
+      updateDisplay();
+   }
+ },1000);
 }
 
-function startWorkout(totalRounds){
-
-stopWorkout();
-
-rounds = totalRounds;
-currentRound = 1;
-workIndex = 0;
-phase = "work";
-timeLeft = 40;
-
+function stopWorkout(){ clearInterval(interval); }
 updateDisplay();
-
-interval = setInterval(()=>{
-
-timeLeft--;
-
-updateDisplay();
-
-if(timeLeft <= 0){
-
-beep();
-
-if(phase === "work"){
-
-phase = "rest";
-timeLeft = 20;
-
-}else{
-
-workIndex++;
-
-if(workIndex >= exercises.length){
-
-if(currentRound >= rounds){
-
-stopWorkout();
-
-document.getElementById("phase").innerText =
-"TREINO CONCLUÍDO";
-
-document.getElementById("exercise").innerText =
-"Parabéns!";
-
-document.getElementById("block").innerText =
-"Excelente trabalho";
-
-beep(1200,600);
-return;
-}
-
-currentRound++;
-workIndex = 0;
-}
-
-phase = "work";
-timeLeft = 40;
-}
-
-updateDisplay();
-}
-
-},1000);
-}
-
-function stopWorkout(){
-clearInterval(interval);
-}
-
-updateDisplay();
-
 </script>
-
 </body>
 </html>
